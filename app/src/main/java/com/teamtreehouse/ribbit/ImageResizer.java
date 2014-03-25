@@ -5,9 +5,9 @@ import android.graphics.BitmapFactory;
 import android.util.Pair;
 
 /**
- * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  This class supports the MainActivity.java class by resizing
+ * 			  media to the proper size based on server requirements and
+ * 			  sending/receiving device specs.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -17,7 +17,7 @@ import android.util.Pair;
  */
 public class ImageResizer {
 
-	/*
+	/**
 	 * Call this static method to resize an image to a specified width and height.
 	 * 
 	 * @param targetWidth  The width to resize to.
@@ -40,6 +40,14 @@ public class ImageResizer {
         return resizedBitmap;        
 	}
 
+    /**
+     * Maintina the aspect ratio based on resize so that media doesn't
+     * get stretched.
+     *
+     * @param imageData
+     * @param shorterSideTarget
+     * @return Bitmap resizeImage - resized image with maintained aspect ratio
+     */
 	public static Bitmap resizeImageMaintainAspectRatio(byte[] imageData, int shorterSideTarget) {
         Pair<Integer, Integer> dimensions = getDimensions(imageData);
 		
@@ -65,7 +73,13 @@ public class ImageResizer {
         
 		return resizeImage(imageData, targetWidth, targetHeight);
 	}
-	
+
+    /**
+     * Getter of media screen dimensions
+     *
+     * @param  imageData - media byte data
+     * @return none
+     */
 	public static Pair<Integer, Integer> getDimensions(byte[] imageData) {
 		// Use BitmapFactory to decode the image
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -76,7 +90,16 @@ public class ImageResizer {
         
         return new Pair<Integer, Integer>(options.outWidth, options.outHeight);
 	}
-	
+
+    /**
+     * Generate a sample dimension size for smaller images required in some
+     * cases and/or on smaller devices.
+     *
+     * @param  options
+     * @param  reqWidth
+     * @param  reqHeight
+     * @return int inSampleSize - sample dimension size
+     */
 	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
 	    // Raw height and width of image
 	    final int height = options.outHeight;

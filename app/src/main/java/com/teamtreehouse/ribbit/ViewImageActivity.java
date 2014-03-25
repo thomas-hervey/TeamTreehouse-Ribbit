@@ -25,6 +25,14 @@ import java.util.TimerTask;
  */
 public class ViewImageActivity extends Activity {
 
+    /**
+     * Initial create method setting up self-destruct
+     * characteristics including a the image view,
+     * image uri, and a timer. Here picasso is used.
+     *
+     * @param  savedInstanceState
+     * @return none
+     */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -57,6 +65,12 @@ public class ViewImageActivity extends Activity {
 
 	}
 
+    /**
+     * Menu option to return home
+     *
+     * @param  item
+     * @return boolean
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

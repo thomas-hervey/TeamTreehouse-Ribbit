@@ -40,6 +40,12 @@ public class EditFriendsActivity extends ListActivity {
 	
 	protected List<ParseUser> mUsers;
 
+    /**
+     * Initial create method generating the view and menu
+     *
+     * @param  savedInstanceState
+     * @return none
+     */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -50,7 +56,14 @@ public class EditFriendsActivity extends ListActivity {
 		
 		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 	}
-	
+
+    /**
+     * When the app is resumed from being closed out, reset normal
+     * running settings or throw an error
+     *
+     * @param
+     * @return none
+     */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -107,6 +120,12 @@ public class EditFriendsActivity extends ListActivity {
 
 	}
 
+    /**
+     * The only menu option is to navigate to the home activity
+     *
+     * @param  item - item selected
+     * @return boolean
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -124,6 +143,16 @@ public class EditFriendsActivity extends ListActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+    /**
+     * Action bar user options including: add friend, remove friend.
+     * These actions change the user's friendship status in the background.
+     *
+     * @param  l
+     * @param  v
+     * @param  position
+     * @param  id
+     * @return none
+     */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
@@ -146,7 +175,14 @@ public class EditFriendsActivity extends ListActivity {
 			}
 		});
 	}
-	
+
+    /**
+     * Check if there is a change in friend friendship status
+     * based on checkmarks next to a friend's name
+     *
+     * @param
+     * @return none
+     */
 	private void addFriendCheckmarks() {
 		mFriendsRelation.getQuery().findInBackground(new FindCallback<ParseUser>() {
 			@Override
@@ -155,7 +191,8 @@ public class EditFriendsActivity extends ListActivity {
 					// list returned - look for a match
 					for (int i = 0; i < mUsers.size(); i++) {
 						ParseUser user = mUsers.get(i);
-						
+
+                        // get the list of checked friends
 						for (ParseUser friend : friends) {
 							if (friend.getObjectId().equals(user.getObjectId())) {
 								getListView().setItemChecked(i, true);
@@ -170,13 +207,3 @@ public class EditFriendsActivity extends ListActivity {
 		});
 	}
 }
-
-
-
-
-
-
-
-
-
-

@@ -15,8 +15,8 @@ import java.io.InputStream;
 
 /**
  * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  getting media byte array information and checking media for
+ * 			  use requirements.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -29,7 +29,15 @@ public class FileHelper {
 	public static final String TAG = FileHelper.class.getSimpleName();
 	
 	public static final int SHORT_SIDE_TARGET = 1280;
-	
+
+    /**
+     * Getter method opening input stream, retrieving byte stream,
+     * writing out the media, and then closing the stream.
+     *
+     * @param context
+     * @param uri
+     * @return byte[] fileBytes - bytes from file
+     */
 	public static byte[] getByteArrayFromFile(Context context, Uri uri) {
 		byte[] fileBytes = null;
         InputStream inStream = null;
@@ -73,7 +81,13 @@ public class FileHelper {
         
         return fileBytes;
 	}
-	
+
+    /**
+     * Reduce media size to 10MB required for back end usage
+     *
+     * @param imageData
+     * @return byte[] - reduced data array
+     */
 	public static byte[] reduceImageForUpload(byte[] imageData) {
 		// Convert file to bitmap
 		Bitmap bitmap = ImageResizer.resizeImageMaintainAspectRatio(imageData, SHORT_SIDE_TARGET);
@@ -92,6 +106,14 @@ public class FileHelper {
 		return reducedData;
 	}
 
+    /**
+     * Getter method for retrieving the type of media file for display
+     *
+     * @param context
+     * @param uri
+     * @param fileType
+     * @return String fileName - upload file name
+     */
 	public static String getFileName(Context context, Uri uri, String fileType) {
 		String fileName = "uploaded_file.";
 		

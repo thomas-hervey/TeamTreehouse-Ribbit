@@ -13,9 +13,9 @@ import com.parse.ParseObject;
 import java.util.List;
 
 /**
- * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  This class supports the MainActivity.java class by handling
+ * 			  a message that is being viewed. When a message is clicked
+ * 			  to be viewed, a new view is created (or updated).
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -27,13 +27,26 @@ public class MessageAdapter extends ArrayAdapter<ParseObject> {
 
 	protected Context mContext;
 	protected List<ParseObject> mMessages;
-	
+
+    /**
+     * Constructor to set up
+     * @param context
+     * @param messages
+     */
 	public MessageAdapter(Context context, List<ParseObject> messages) {
 		super(context, R.layout.message_item, messages);
 		mContext = context;
 		mMessages = messages;
 	}
-	
+
+    /**
+     * Get the new view of the selected message to be viewed.
+     *
+     * @param  position
+     * @param  convertView
+     * @param  parent
+     * @return View convertView - updated view of the current message
+     */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
@@ -65,12 +78,19 @@ public class MessageAdapter extends ArrayAdapter<ParseObject> {
 		
 		return convertView;
 	}
-	
+
+    // generate icon image view and text view that messages will hold
 	private static class ViewHolder {
 		ImageView iconImageView;
 		TextView  nameLabel;
 	}
-	
+
+    /**
+     * Refill the inbox messages and update the system.
+     *
+     * @param  messages - inbox messages
+     * @return none
+     */
 	public void refill(List<ParseObject> messages) {
 		mMessages.clear();
 		mMessages.addAll(messages);

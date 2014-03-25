@@ -5,9 +5,8 @@ import android.app.Application;
 import com.parse.Parse;
 
 /**
- * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  This class supports the MainActivity.java class by initializing
+ * 			  the app's parse relation.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -16,7 +15,13 @@ import com.parse.Parse;
  * @author    Thomas Hervey <thomasahervey@gmail.com>
  */
 public class RibbitApplication extends Application {
-	
+
+    /**
+     * Initialize parse with encryption
+     *
+     * @param
+     * @return none
+     */
 	@Override
 	public void onCreate() { 
 		super.onCreate();

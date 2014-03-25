@@ -19,8 +19,8 @@ import java.util.List;
 
 /**
  * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  setting up the friends fragment that displays a user's list
+ * 			  of friends. This includes restarting upon app resume.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -35,7 +35,15 @@ public class FriendsFragment extends ListFragment {
 	protected ParseRelation<ParseUser> mFriendsRelation;
 	protected ParseUser mCurrentUser;	
 	protected List<ParseUser> mFriends;
-	
+
+    /**
+     * Generate fragment view
+     *
+     * @param  inflater
+     * @param  container
+     * @param  savedInstanceState
+     * @return View rootView
+     */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -45,6 +53,13 @@ public class FriendsFragment extends ListFragment {
 		return rootView;
 	}
 
+    /**
+     * On application resume, set up friends fragment as if
+     * the application had been running
+     *
+     * @param
+     * @return none
+     */
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -59,32 +74,32 @@ public class FriendsFragment extends ListFragment {
 		query.findInBackground(new FindCallback<ParseUser>() {
 			@Override
 			public void done(List<ParseUser> friends, ParseException e) {
-				getActivity().setProgressBarIndeterminateVisibility(false);
-				
-				if (e == null) {
-					mFriends = friends;
-					
-					String[] usernames = new String[mFriends.size()];
-					int i = 0;
-					for(ParseUser user : mFriends) {
-						usernames[i] = user.getUsername();
-						i++;
-					}
-					ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-							getListView().getContext(), 
-							android.R.layout.simple_list_item_1,
-							usernames);
-					setListAdapter(adapter);
-				}
-				else {
-					Log.e(TAG, e.getMessage());
-					AlertDialog.Builder builder = new AlertDialog.Builder(getListView().getContext());
-					builder.setMessage(e.getMessage())
-						.setTitle(R.string.error_title)
-						.setPositiveButton(android.R.string.ok, null);
-					AlertDialog dialog = builder.create();
-					dialog.show();
-				}
+            getActivity().setProgressBarIndeterminateVisibility(false);
+
+            if (e == null) {
+                mFriends = friends;
+
+                String[] usernames = new String[mFriends.size()];
+                int i = 0;
+                for(ParseUser user : mFriends) {
+                    usernames[i] = user.getUsername();
+                    i++;
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        getListView().getContext(),
+                        android.R.layout.simple_list_item_1,
+                        usernames);
+                setListAdapter(adapter);
+            }
+            else {
+                Log.e(TAG, e.getMessage());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getListView().getContext());
+                builder.setMessage(e.getMessage())
+                    .setTitle(R.string.error_title)
+                    .setPositiveButton(android.R.string.ok, null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
 			}
 		});
 	}

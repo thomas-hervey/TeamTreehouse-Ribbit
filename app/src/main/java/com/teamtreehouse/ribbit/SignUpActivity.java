@@ -15,8 +15,9 @@ import com.parse.SignUpCallback;
 
 /**
  * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  a sign up screen. A user enters in their username, password
+ * 			  and email. Upon success, the user has created a profile, is
+ * 			  logged in and redirected home.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -31,12 +32,23 @@ public class SignUpActivity extends Activity {
 	protected EditText mEmail;
 	protected Button mSignUpButton;
 
+    /**
+     * Initial create method generating sign up view with desired username,
+     * password and email information. Unless there is an issue with the
+     * sign up credentials, the user will have a new account generated,
+     * the desired email and username will be reserved, and the user will be
+     * logged in and sent to their home page.
+     *
+     * @param  savedInstanceState
+     * @return none
+     */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_sign_up);
-		
+
+        // sign up credentials
 		mUsername = (EditText)findViewById(R.id.usernameField);
 		mPassword = (EditText)findViewById(R.id.passwordField);
 		mEmail = (EditText)findViewById(R.id.emailField);
@@ -44,53 +56,54 @@ public class SignUpActivity extends Activity {
 		mSignUpButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				String username = mUsername.getText().toString();
-				String password = mPassword.getText().toString();
-				String email = mEmail.getText().toString();
-				
-				username = username.trim();
-				password = password.trim();
-				email = email.trim();
-				
-				if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
-					builder.setMessage(R.string.signup_error_message)
-						.setTitle(R.string.signup_error_title)
-						.setPositiveButton(android.R.string.ok, null);
-					AlertDialog dialog = builder.create();
-					dialog.show();
-				}
-				else {
-					// create the new user!
-					setProgressBarIndeterminateVisibility(true);
-					
-					ParseUser newUser = new ParseUser();
-					newUser.setUsername(username);
-					newUser.setPassword(password);
-					newUser.setEmail(email);
-					newUser.signUpInBackground(new SignUpCallback() {
-						@Override
-						public void done(ParseException e) {
-							setProgressBarIndeterminateVisibility(false);
-							
-							if (e == null) {
-								// Success!
-								Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
-								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-								intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-								startActivity(intent);
-							}
-							else {
-								AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
-								builder.setMessage(e.getMessage())
-									.setTitle(R.string.signup_error_title)
-									.setPositiveButton(android.R.string.ok, null);
-								AlertDialog dialog = builder.create();
-								dialog.show();
-							}
-						}
-					});
-				}
+            String username = mUsername.getText().toString();
+            String password = mPassword.getText().toString();
+            String email = mEmail.getText().toString();
+
+            username = username.trim();
+            password = password.trim();
+            email = email.trim();
+
+            // if the username or email is empty
+            if (username.isEmpty() || password.isEmpty() || email.isEmpty()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
+                builder.setMessage(R.string.signup_error_message)
+                    .setTitle(R.string.signup_error_title)
+                    .setPositiveButton(android.R.string.ok, null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+            else {
+                // create the new user!
+                setProgressBarIndeterminateVisibility(true);
+
+                ParseUser newUser = new ParseUser();
+                newUser.setUsername(username);
+                newUser.setPassword(password);
+                newUser.setEmail(email);
+                newUser.signUpInBackground(new SignUpCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        setProgressBarIndeterminateVisibility(false);
+
+                        if (e == null) {
+                            // Success!
+                            Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                        }
+                        else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(SignUpActivity.this);
+                            builder.setMessage(e.getMessage())
+                                .setTitle(R.string.signup_error_title)
+                                .setPositiveButton(android.R.string.ok, null);
+                            AlertDialog dialog = builder.create();
+                            dialog.show();
+                        }
+                    }
+                });
+            }
 			}
 		});
 	}

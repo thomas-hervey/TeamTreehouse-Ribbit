@@ -2,8 +2,8 @@ package com.teamtreehouse.ribbit;
 
 /**
  * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  a list of parse back-end constants that will be used
+ * 			  throughout the app.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -24,7 +24,8 @@ public final class ParseConstants {
 	public static final String KEY_FILE = "file";
 	public static final String KEY_FILE_TYPE = "fileType";
 	public static final String KEY_CREATED_AT = "createdAt";
-	
+
+    // media types
 	public static final String TYPE_IMAGE = "image";
 	public static final String TYPE_VIDEO = "video";
 }

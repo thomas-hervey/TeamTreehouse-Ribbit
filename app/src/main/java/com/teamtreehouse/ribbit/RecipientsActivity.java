@@ -27,9 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  This class supports the MainActivity.java class by handling
+ * 			  the list of recipients when a message is sent. The list of
+ * 			  recipients is generated based on the selected friends
+ * 			  from the sender's friends list.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -41,13 +42,23 @@ public class RecipientsActivity extends ListActivity {
 
 	public static final String TAG = RecipientsActivity.class.getSimpleName();
 
+    // parse recipient variables
 	protected ParseRelation<ParseUser> mFriendsRelation;
 	protected ParseUser mCurrentUser;	
 	protected List<ParseUser> mFriends;	
 	protected MenuItem mSendMenuItem;
+
+    // media variables
 	protected Uri mMediaUri;
 	protected String mFileType;
 
+    /**
+     * Initial create method that retrieves intent data about
+     * recipient list
+     *
+     * @param  savedInstanceState
+     * @return none
+     */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,7 +72,14 @@ public class RecipientsActivity extends ListActivity {
 		mMediaUri = getIntent().getData();
 		mFileType = getIntent().getExtras().getString(ParseConstants.KEY_FILE_TYPE);
 	}
-	
+
+    /**
+     * On application resume, set up friends fragment as if
+     * the application had been running
+     *
+     * @param
+     * @return none
+     */
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -76,32 +94,34 @@ public class RecipientsActivity extends ListActivity {
 		query.findInBackground(new FindCallback<ParseUser>() {
 			@Override
 			public void done(List<ParseUser> friends, ParseException e) {
-				setProgressBarIndeterminateVisibility(false);
-				
-				if (e == null) {
-					mFriends = friends;
-					
-					String[] usernames = new String[mFriends.size()];
-					int i = 0;
-					for(ParseUser user : mFriends) {
-						usernames[i] = user.getUsername();
-						i++;
-					}
-					ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-							getListView().getContext(), 
-							android.R.layout.simple_list_item_checked,
-							usernames);
-					setListAdapter(adapter);
-				}
-				else {
-					Log.e(TAG, e.getMessage());
-					AlertDialog.Builder builder = new AlertDialog.Builder(RecipientsActivity.this);
-					builder.setMessage(e.getMessage())
-						.setTitle(R.string.error_title)
-						.setPositiveButton(android.R.string.ok, null);
-					AlertDialog dialog = builder.create();
-					dialog.show();
-				}
+            setProgressBarIndeterminateVisibility(false);
+
+            // get recipient usernames
+            if (e == null) {
+                mFriends = friends;
+
+                String[] usernames = new String[mFriends.size()];
+                int i = 0;
+                for(ParseUser user : mFriends) {
+                    usernames[i] = user.getUsername();
+                    i++;
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                        getListView().getContext(),
+                        android.R.layout.simple_list_item_checked,
+                        usernames);
+                setListAdapter(adapter);
+            }
+            // error
+            else {
+                Log.e(TAG, e.getMessage());
+                AlertDialog.Builder builder = new AlertDialog.Builder(RecipientsActivity.this);
+                builder.setMessage(e.getMessage())
+                    .setTitle(R.string.error_title)
+                    .setPositiveButton(android.R.string.ok, null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
 			}
 		});
 	}
@@ -115,6 +135,12 @@ public class RecipientsActivity extends ListActivity {
 
 	}
 
+    /**
+     * Menu inflater
+     *
+     * @param  menu
+     * @return none
+     */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -123,10 +149,18 @@ public class RecipientsActivity extends ListActivity {
 		return true;
 	}
 
+    /**
+     * Menu options to send user home or send message
+     *
+     * @param  item
+     * @return none
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case android.R.id.home:
+
+        // return home
+        case android.R.id.home:
 			// This ID represents the Home or Up button. In the case of this
 			// activity, the Up button is shown. Use NavUtils to allow users
 			// to navigate up one level in the application structure. For
@@ -136,6 +170,8 @@ public class RecipientsActivity extends ListActivity {
 			//
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
+
+        // send message
 		case R.id.action_send:
 			ParseObject message = createMessage();
 			if (message == null) {
@@ -157,6 +193,15 @@ public class RecipientsActivity extends ListActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+    /**
+     * Determine menu item visibility based on the number of checked items.
+     *
+     * @param  l
+     * @param  v
+     * @param  position
+     * @param  id
+     * @return none
+     */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
@@ -168,8 +213,18 @@ public class RecipientsActivity extends ListActivity {
 			mSendMenuItem.setVisible(false);
 		}
 	}
-	
+
+    /**
+     * Create the message to be sent to the user's friend recipients.
+     * The message is generated when the file name is set, the parse
+     * file is created, and the file is attached to the parse file.
+     *
+     * @param
+     * @return ParseObject message - the message to send
+     */
 	protected ParseObject createMessage() {
+
+        // add attributes to parse object message
 		ParseObject message = new ParseObject(ParseConstants.CLASS_MESSAGES);
 		message.put(ParseConstants.KEY_SENDER_ID, ParseUser.getCurrentUser().getObjectId());
 		message.put(ParseConstants.KEY_SENDER_NAME, ParseUser.getCurrentUser().getUsername());
@@ -195,7 +250,11 @@ public class RecipientsActivity extends ListActivity {
 			return message;
 		}
 	}
-	
+
+    /**
+     *
+     * @return
+     */
 	protected ArrayList<String> getRecipientIds() {
 		ArrayList<String> recipientIds = new ArrayList<String>();
 		for (int i = 0; i < getListView().getCount(); i++) {
@@ -205,23 +264,27 @@ public class RecipientsActivity extends ListActivity {
 		}
 		return recipientIds;
 	}
-	
+
+    /**
+     *
+     * @param message
+     */
 	protected void send(ParseObject message) {
 		message.saveInBackground(new SaveCallback() {
 			@Override
 			public void done(ParseException e) {
-				if (e == null) {
-					// success!
-					Toast.makeText(RecipientsActivity.this, R.string.success_message, Toast.LENGTH_LONG).show();
-				}
-				else {
-					AlertDialog.Builder builder = new AlertDialog.Builder(RecipientsActivity.this);
-					builder.setMessage(R.string.error_sending_message)
-						.setTitle(R.string.error_title)
-						.setPositiveButton(android.R.string.ok,  null);
-					AlertDialog dialog = builder.create();
-					dialog.show();
-				}
+            if (e == null) {
+                // success!
+                Toast.makeText(RecipientsActivity.this, R.string.success_message, Toast.LENGTH_LONG).show();
+            }
+            else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(RecipientsActivity.this);
+                builder.setMessage(R.string.error_sending_message)
+                    .setTitle(R.string.error_title)
+                    .setPositiveButton(android.R.string.ok,  null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
 			}
 		});
 	}

@@ -29,9 +29,9 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  This main activity class controls the app flow and displays
+ * 			  the main view allowing a user to look at their friends list,
+ * 			  inbox, and take/upload a photo or video for a message.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -55,10 +55,20 @@ public class MainActivity extends FragmentActivity implements
 	public static final int FILE_SIZE_LIMIT = 1024*1024*10; // 10 MB
 	
 	protected Uri mMediaUri;
-	
-	protected DialogInterface.OnClickListener mDialogListener = 
+
+    /* dialog interface */
+    protected DialogInterface.OnClickListener mDialogListener =
 			new DialogInterface.OnClickListener() {
-		@Override
+        /**
+         * Dialog interface click listener handler for message
+         * media selection type. A new intent is generated and
+         * the media type is sent to a result activity.
+         *
+         * @param  dialog - click dialog
+         * @param  which - media type selection
+         * @return none
+         */
+        @Override
 		public void onClick(DialogInterface dialog, int which) {
 			switch(which) {
 				case 0: // Take picture
@@ -103,6 +113,13 @@ public class MainActivity extends FragmentActivity implements
 			}
 		}
 
+        /**
+         * File output handler for when a user takes a photo
+         * or video and needs to save it to the device's storage
+         *
+         * @param  mediaType - media type
+         * @return Uri
+         */
 		private Uri getOutputMediaFileUri(int mediaType) {
 			// To be safe, you should check that the SDCard is mounted
 		    // using Environment.getExternalStorageState() before doing this.
@@ -149,16 +166,18 @@ public class MainActivity extends FragmentActivity implements
 				return null;
 			}
 		}
-		
+
+        /**
+         * Checks to see if the device has available external storage
+         *
+         * @param
+         * @return boolean
+         */
 		private boolean isExternalStorageAvailable() {
 			String state = Environment.getExternalStorageState();
 			
-			if (state.equals(Environment.MEDIA_MOUNTED)) {
-				return true;
-			}
-			else {
-				return false;
-			}
+			if (state.equals(Environment.MEDIA_MOUNTED)) { return true; }
+			else { return false; }
 		}
 	};
 
@@ -177,6 +196,13 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	ViewPager mViewPager;
 
+    /**
+     * Initial create method generating a parse user
+     * and setting up the action bar
+     *
+     * @param  savedInstanceState - state
+     * @return none
+     */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -228,21 +254,31 @@ public class MainActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 	}
-	
+
+    /**
+     *
+     *
+     * @param  requestCode
+     * @param  resultCode
+     * @param  data
+     * @return none
+     */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		
+
+        // if the the user requests to send a photo or video
 		if (resultCode == RESULT_OK) {			
 			if (requestCode == PICK_PHOTO_REQUEST || requestCode == PICK_VIDEO_REQUEST) {
 				if (data == null) {
 					Toast.makeText(this, getString(R.string.general_error), Toast.LENGTH_LONG).show();
 				}
-				else {
-					mMediaUri = data.getData();
-				}
+                // get data
+				else { mMediaUri = data.getData(); }
 				
 				Log.i(TAG, "Media URI: " + mMediaUri);
+
+                // if the user wants to send a video
 				if (requestCode == PICK_VIDEO_REQUEST) {
 					// make sure the file is less than 10 MB
 					int fileSize = 0;
@@ -297,6 +333,12 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+    /**
+     * Start login activity
+     *
+     * @param
+     * @return none
+     */
 	private void navigateToLogin() {
 		Intent intent = new Intent(this, LoginActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -304,13 +346,26 @@ public class MainActivity extends FragmentActivity implements
 		startActivity(intent);
 	}
 
+    /**
+     * Menu inflater
+     *
+     * @param  menu
+     * @return none
+     */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
+
+    /**
+     * Handler if user selects one of the following action bar options:
+     * logout, edit friends, access camera
+     *
+     * @param  item - selected menu item
+     * @return none
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int itemId = item.getItemId();
@@ -335,6 +390,14 @@ public class MainActivity extends FragmentActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
+    /**
+     * Fragment tab handler that switches between inbox
+     * and friends tabs
+     *
+     * @param  tab - tab selected (friends || inbox)
+     * @param  fragmentTransaction
+     * @return none
+     */
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
@@ -343,13 +406,29 @@ public class MainActivity extends FragmentActivity implements
 		mViewPager.setCurrentItem(tab.getPosition());
 	}
 
+    /**
+     * Stub method intentionally left blank
+     *
+     * @param  tab - tab selected (friends || inbox)
+     * @param  fragmentTransaction
+     * @return none
+     */
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+        /* intentionally left blank */
 	}
 
+    /**
+     * Stub method intentionally left blank
+     *
+     * @param  tab - tab selected (friends || inbox)
+     * @param  fragmentTransaction
+     * @return none
+     */
 	@Override
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+        /* intentionally left blank */
 	}
 }

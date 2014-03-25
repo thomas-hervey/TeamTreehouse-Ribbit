@@ -8,9 +8,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.Locale;
 
 /**
- * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  This class supports the MainActivity.java class by helping
+ * 			  with fragment adaption incuding changing minor details such
+ * 			  as title.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -32,11 +32,16 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		mContext = context;
 	}
 
+    /**
+     * getItem is called to instantiate the fragment for the given page.
+     * Return a DummySectionFragment (defined as a static inner class
+     * below) with the page number as its lone argument.
+     *
+     * @param  position -
+     * @return none
+     */
 	@Override
 	public Fragment getItem(int position) {
-		// getItem is called to instantiate the fragment for the given page.
-		// Return a DummySectionFragment (defined as a static inner class
-		// below) with the page number as its lone argument.
 		
 		switch(position) {
 			case 0:
@@ -48,11 +53,23 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		return null;
 	}
 
+    /**
+     * ?
+     *
+     * @param
+     * @return int count
+     */
 	@Override
 	public int getCount() {
 		return 2;
 	}
 
+    /**
+     * Retrieve and set the title based on which fragment is displayed
+     *
+     * @param  position
+     * @return none
+     */
 	@Override
 	public CharSequence getPageTitle(int position) {
 		Locale l = Locale.getDefault();

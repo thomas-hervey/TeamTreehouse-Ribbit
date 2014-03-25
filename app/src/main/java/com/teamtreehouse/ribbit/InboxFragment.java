@@ -20,8 +20,8 @@ import java.util.List;
 
 /**
  * 			  This class supports the MainActivity.java class by providing
- * 			  the list of 'predicted' crystal ball responses and randomly
- * 			  assigning one.
+ * 			  setting up the inbox fragment that displays a user's list
+ * 			  of inbox messages. This includes restarting upon app resume.
  *
  * 			  This project was created while following the teamtreehouse.com
  * 			  Build a Self-Destructing Message Android App project
@@ -32,7 +32,15 @@ import java.util.List;
 public class InboxFragment extends ListFragment {
 	
 	protected List<ParseObject> mMessages;
-	
+
+    /**
+     * Generate fragment view
+     *
+     * @param  inflater
+     * @param  container
+     * @param  savedInstanceState
+     * @return View rootView
+     */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -41,7 +49,14 @@ public class InboxFragment extends ListFragment {
 
 		return rootView;
 	}
-	
+
+    /**
+     * On application resume, set up friends fragment as if
+     * the application had been running
+     *
+     * @param
+     * @return none
+     */
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -81,7 +96,18 @@ public class InboxFragment extends ListFragment {
 			}
 		});
 	}
-	
+
+    /**
+     * When an inbox item is clicked, the self-destructing message and its information
+     * is retrieved. A new intent for the message is started, the message runs, and
+     * then is deleted locally and remotely.
+     *
+     * @param  l
+     * @param  v
+     * @param  position
+     * @param  id
+     * @return none
+     */
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
